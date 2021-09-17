@@ -21,8 +21,9 @@ app.get('/', (req: any, res: { send: (arg0: string) => void; }) => {
 
 io.on('connection', (socket: { on: (arg0: string, arg1: (msg: string) => void) => void; }) => {
     console.log('a user connected');
-    socket.on('chat message', (msg: string) => {
+    socket.on('send message', (msg: string) => {
         console.log('message: ' + msg)
+        io.emit('get message', `Message '${msg}' reçu`)
     })
 });
 

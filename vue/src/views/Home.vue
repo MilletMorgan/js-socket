@@ -1,6 +1,9 @@
 <template>
   <div>
-    <button @click="sendMessage()">click</button>
+    <input type="text" v-model="msgToSend">
+    <button @click="sendMessage">Envoyé le message au serveur</button>
+    <br><br>
+    Message du serveur: {{ messageReceived }}
 
     <h1>Configuration partie</h1>
     <form>
@@ -27,7 +30,6 @@
 <script>
 import { defineComponent } from "vue";
 import io from "socket.io-client";
-import axios from "axios";
 
 export default defineComponent({
   name: "Home",
@@ -35,14 +37,18 @@ export default defineComponent({
     return {
       nbPlayer: 0,
       lieu: "",
-      messages: [],
+      messageReceived: "",
       socket: io("localhost:3000"),
+      msgToSend: "",
     };
   },
   methods: {
     async sendMessage() {
-      this.socket.emit("chat message", "coucou");
-      this.message = "";
+      this.socket.emit("send message", this.msgToSend);
+
+      this.socket.on("get message", (msg) => {
+        this.messageReceived = msg;
+      });
     },
   },
 });
